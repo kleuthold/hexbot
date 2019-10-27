@@ -1,11 +1,24 @@
 package com.kmlsolutions.hexbot
 
-import org.springframework.boot.SpringApplication
-import org.springframework.boot.autoconfigure.SpringBootApplication
+import mu.KotlinLogging
+import java.awt.Robot
 
-@SpringBootApplication
-open class HexBotApplication
+class HexBotApplication {
+    companion object {
+        val log = KotlinLogging.logger { }
+    }
 
-fun main(args: Array<String>) {
-    SpringApplication.run(HexBotApplication::class.java, *args)
+    fun start() {
+        log.info { "starting" }
+        val robot = Robot()
+        (1..5).forEach {
+            robot.delay(1000)
+            robot.mouseMove(it*200, it*200)
+        }
+        log.info("done")
+    }
+}
+
+fun main() {
+    HexBotApplication().start()
 }
