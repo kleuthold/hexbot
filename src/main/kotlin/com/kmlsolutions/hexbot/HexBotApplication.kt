@@ -1,7 +1,7 @@
 package com.kmlsolutions.hexbot
 
 import mu.KotlinLogging
-import java.awt.Rectangle
+import java.awt.Dimension
 import java.awt.Robot
 import java.awt.Toolkit
 
@@ -11,25 +11,36 @@ class HexBotApplication {
         val log = KotlinLogging.logger { }
     }
 
-    fun start() {
-        log.info { "starting" }
-        val screenSize = Toolkit.getDefaultToolkit().screenSize
-        val robot = Robot()
+    private val screenReader = GameScreenReader()
 
-        (1 until 15).forEach { _ ->
-            val image = robot.createScreenCapture(Rectangle(0, 0, screenSize.width, screenSize.height))
-            val count = ScreenDetector().countPixelsInColorRange(image, 0, 50, 0, 50, 0, 50)
-            if(count > 200000) log.info { "found $count dark pixels, i might be looking at the superhexio screen" }
-            Thread.sleep(100)
-        }
+    fun run() {
+        log.info { "Let's play Superhex.io!" }
 
         while(true) {
-            robot.mouseMove((0 until screenSize.width).random(), (0 until screenSize.height).random())
-            Thread.sleep(100)
+            playOneGame(Robot(), Toolkit.getDefaultToolkit().screenSize)
         }
+    }
+
+    private fun playOneGame(robot: Robot, screenSize: Dimension) {
+        log.info { "Starting a game!" }
+        log.info { "Waiting for a green rectangle to click..." }
+        val point = screenReader.waitForGreenRectangle(robot, screenSize)
+        log.info { "I found a green rectangle, let me try to click it!" }
+        screenReader.clickGreenRectangle(robot, point)
+        log.info { "I clicked it, let's see if it goes away..." }
+        screenReader.waitForNoGreenRectangle(robot, screenSize)
+        log.info { "The green rectangle went away, let's play!" }
+        while(true) {
+            val x = (0 until screenSize.width).random()
+            val y = (0 until screenSize.height).random()
+            robot.mouseMove(x, y)
+            Thread.sleep(1000)
+            if(screenReader.findGreenRectangle(robot, screenSize) != null) break
+        }
+        log.info { "I see a green rectangle, did I die?" }
     }
 }
 
 fun main() {
-    HexBotApplication().start()
+    HexBotApplication().run()
 }
