@@ -13,7 +13,7 @@ class GameScreenReader {
     }
 
     private val screenDetector = ScreenDetector()
-    private val greenButtonColorRange = ColorRange(minR = 99, maxR = 99, minG = 185, maxG = 185, minB = 97, maxB = 97)
+    private val greenButtonColorRange = ColorRange(minR = 70, maxR = 90, minG = 165, maxG = 185, minB = 70, maxB = 90)
 
     fun waitForGreenRectangle(robot: Robot, screenSize: Dimension): Point {
         while(true) {
@@ -40,8 +40,8 @@ class GameScreenReader {
         val point = screenDetector.findRectangleOfColor(
             image,
             greenButtonColorRange,
-            width = 0,
-            height = 0
+            width = 20,
+            height = 20
         )
 
         if(point != null) {

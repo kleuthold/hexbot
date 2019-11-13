@@ -16,19 +16,21 @@ class ScreenDetector {
         width: Int,
         height: Int
     ): Point? {
-        for(x in 0 until image.width) {
-            for(y in 0 until image.height) {
-                var isIt = true
-                loop@ for(xx in 0..width) {
-                    for (yy in 0..height) {
-                        if (!isPixelInRange(Point(x + xx, y + yy), image, colorRange)) {
-                            isIt = false
-                            break@loop
+        for(x in 0 until (image.width - width)) {
+            for(y in 0 until (image.height - height)) {
+                if (isPixelInRange(Point(x, y), image, colorRange)) {
+                    var count = 0
+                    for(w in 0 until width) {
+                        for(h in 0 until height) {
+                            if(isPixelInRange(Point(x+w, y+h), image, colorRange)) {
+                                count++
+                            }
                         }
                     }
-                }
-                if(isIt) {
-                    return Point(x, y)
+                    val ratio = 1.0 * count / (width * height)
+                    if(ratio > 0.7) {
+                        return Point(x + width/2, y + height/2)
+                    }
                 }
             }
         }

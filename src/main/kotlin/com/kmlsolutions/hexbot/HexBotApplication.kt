@@ -25,7 +25,7 @@ class HexBotApplication {
         log.info { "Starting a game!" }
         log.info { "Waiting for a green rectangle to click..." }
         val point = screenReader.waitForGreenRectangle(robot, screenSize)
-        log.info { "I found a green rectangle, let me try to click it!" }
+        log.info { "I found a green rectangle at ${point}, let me try to click it!" }
         screenReader.clickGreenRectangle(robot, point)
         log.info { "I clicked it, let's see if it goes away..." }
         screenReader.waitForNoGreenRectangle(robot, screenSize)
@@ -34,7 +34,7 @@ class HexBotApplication {
             val x = (0 until screenSize.width).random()
             val y = (0 until screenSize.height).random()
             robot.mouseMove(x, y)
-            Thread.sleep(1000)
+            Thread.sleep(500)
             if(screenReader.findGreenRectangle(robot, screenSize) != null) break
         }
         log.info { "I see a green rectangle, did I die?" }
